@@ -22,3 +22,7 @@ app.get('/online', (req, res) => {
   else usersOnline.push({ ip, time: now });
   res.send("online");
 });
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log("Server running on port " + PORT);
+});
