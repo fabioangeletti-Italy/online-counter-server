@@ -1,9 +1,7 @@
 const express = require('express');
 const app = express();
 app.use(express.json());
-
 let usersOnline = [];
-
 app.post('/online', (req,res)=>{
   const now = Date.now();
   const ip = req.ip;
@@ -15,17 +13,12 @@ app.post('/online', (req,res)=>{
   else usersOnline.push({ip,time:now});
   res.sendStatus(200);
 });
-
-app.get('/onlineCount', (req,res)=>{
+app.get('/online', (req, res) => {
   const now = Date.now();
-  usersOnline = usersOnline.filter(u=>now-u.time<60000);
-  res.json({online: usersOnline.length});
+  const ip = req.ip;
+  usersOnline = usersOnline.filter(u => now - u.time < 60000);
+  const index = usersOnline.findIndex(u => u.ip === ip);
+  if (index > -1) usersOnline[index].time = now;
+  else usersOnline.push({ ip, time: now });
+  res.send("online");
 });
-
-const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
-});
-
-
