@@ -22,6 +22,12 @@ app.get('/online', (req, res) => {
   else usersOnline.push({ ip, time: now });
   res.send("online");
 });
+app.get('/count', (req, res) => {
+  const now = Date.now();
+  usersOnline = usersOnline.filter(u => now - u.time < 60000);
+  res.json({ count: usersOnline.length });
+});
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("Server running on port " + PORT);
