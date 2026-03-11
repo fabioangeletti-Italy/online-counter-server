@@ -2,7 +2,9 @@ const express = require('express');
 const cors = require('cors');
 const fs = require('fs');
 const app = express();
-app.use(cors()); 
+app.use(cors({
+  origin: "https://fabioangeletti-italy.github.io"
+}));
 app.use(express.json());
 let usersOnline = [];
 let totalVisits = 2000; // parte da 2000
