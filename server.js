@@ -1,9 +1,19 @@
 const express = require('express');
 const app = express();
 app.use(express.json());
-
 let usersOnline = [];
-let totalVisits = 2000; // parte da 200
+const fs = require('fs');
+let totalVisits = 0;
+let knownVisitors = new Set();
+// Legge counter.json all'avvio
+try {
+    const data = JSON.parse(fs.readFileSync('counter.json', 'utf-8'));
+    totalVisits = data.totalVisits || 2000; // parte da 2000 se vuoto
+    if (data.knownVisitors) knownVisitors = new Set(data.knownVisitors);
+} catch (e) {
+    console.log("File counter.json non trovato, parto da 2000");
+    totalVisits = 2000;
+}
 app.post('/online', (req, res) => {
     const now = Date.now();
     const ip = req.ip;
