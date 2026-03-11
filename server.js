@@ -16,21 +16,27 @@ try {
 }
 app.post('/online', (req, res) => {
     const now = Date.now();
-    const ip = req.ip;
+    const id = req.body.id;
     // Rimuove utenti inattivi da più di 60 secondi
     usersOnline = usersOnline.filter(u => now - u.time < 60000);
-
     // Aggiorna o aggiunge l'utente corrente
-    const index = usersOnline.findIndex(u => u.ip === ip);
-    if (index > -1) usersOnline[index].time = now;
-    else {
-        usersOnline.push({ ip, time: now });
-        totalVisits++; // ogni nuovo visitatore incrementa il contatore globale
+    const index = usersOnline.findIndex(u => u.id === id);
+    if (index > -1) {
+        usersOnline[index].time = now;
+    } else {
+        usersOnline.push({ id, time: now });
+        // Se è un nuovo visitatore incrementa il totale e salva
+        if (!knownVisitors.has(id)) {
+            knownVisitors.add(id);
+            totalVisits++;
+            fs.writeFileSync('counter.json', JSON.stringify({
+                totalVisits,
+                knownVisitors: Array.from(knownVisitors)
+            }));
+        }
     }
-
     res.sendStatus(200);
 });
-
 app.get('/online', (req, res) => {
     const now = Date.now();
     usersOnline = usersOnline.filter(u => now - u.time < 60000);
