@@ -3,12 +3,10 @@ const app = express();
 app.use(express.json());
 
 let usersOnline = [];
-let totalVisits = 2000; // parte da 2000
-
+let totalVisits = 2000; // parte da 200
 app.post('/online', (req, res) => {
     const now = Date.now();
     const ip = req.ip;
-
     // Rimuove utenti inattivi da più di 60 secondi
     usersOnline = usersOnline.filter(u => now - u.time < 60000);
 
